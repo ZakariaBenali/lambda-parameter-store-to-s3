@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    lambda-paramter-store
+
+    Import parameter store under a path and generate an .env file to be stored in an S3 Bucket.
+
+Resources:
+    ParameterStoreToS3EnvFile:
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            CodeUri: src/
+            Handler: app.lambdaHandler
+            Runtime: nodejs16.x
+            FunctionName: bz-parameter-store-to-s3-env-file
+            Description: A lambda to import parameter store params under a specific path and generate an .env file that is uploaded to a specified S3 Bucket.
+            Architectures:
+                - x86_64
+            Environment:
+                Variables:
+                    REGION: ""
+                    PARAMS_PATH: ""
+                    BUCKET: destBucket
+            Policies:
+                - AmazonSSMFullAccess
+                - S3WritePolicy: 
+                    BucketName: destBucket
+        Metadata: # Manage esbuild properties
+            BuildMethod: esbuild 
+            BuildProperties:
+                Minify: true
+                Target: "es2020"
+                # Sourcemap: true # Enabling source maps will create the required NODE_OPTIONS environment variables on your lambda function during sam build
+                EntryPoints:
+                    - app.ts
+                External:
+                    - aws-sdk
