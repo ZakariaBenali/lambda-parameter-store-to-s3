@@ -1,7 +1,15 @@
+
 # lambda-paramter-store-to-s3-env-file
 
 The following is a lambda that imports parameter store parameters specified under a path ex: /portfolio, and 
 generate a .env file that is stored in an s3 bucket specified.
+
+### Before using
+* This lambda only import path parameters using the path specified on this lambda environment variables. 
+* The path have to end with the key for the generated .env file, example:
+	* Parameter with name: /portfolio/prod/database/DATABASE_HOST 
+	Will be added to generated env file as DATABASE_HOST=value
+
 
 ### Installation And deployment (using SAM CLI)
 _A simple guide to configure and deploy your lambda._
